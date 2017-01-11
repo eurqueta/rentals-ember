@@ -1,11 +1,8 @@
 export default function() {
-  this.namespace = '/api';
-
-  this.get('/rentals', function() {
-    return {
-      data: [{
+  this.get('/rentals', function(db,request) {
+    let rentals = [{
         type: 'rentals',
-        id: 'grand-old-mansion',
+        id: 1,
         attributes: {
           title: 'Grand Old Mansion',
           owner: 'Veruca Salt',
@@ -16,7 +13,7 @@ export default function() {
         }
       }, {
         type: 'rentals',
-        id: 'urban-living',
+        id: 2,
         attributes: {
           title: 'Urban Living',
           owner: 'Mike Teavee',
@@ -27,7 +24,7 @@ export default function() {
         }
       }, {
         type: 'rentals',
-        id: 'downtown-charm',
+        id: 3,
         attributes: {
           title: 'Downtown Charm',
           owner: 'Violet Beauregarde',
@@ -36,7 +33,16 @@ export default function() {
           bedrooms: 3,
           image: 'https://upload.wikimedia.org/wikipedia/commons/f/f7/Wheeldon_Apartment_Building_-_Portland_Oregon.jpg'
         }
-      }]
-    };
+      }];
+
+    if(request.queryParams.city !== undefined) {
+      let filteredRentals = rentals.filter(function(i) {
+        return i.attributes.city.toLowerCase().indexOf(request.queryParams.city.toLowerCase()) !== -1;
+      });
+      return { data: filteredRentals };
+    }
+    else {
+      return { data: rentals };
+    }
   });
 }
